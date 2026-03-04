@@ -51,7 +51,7 @@ pnpm run migrate:deploy
 
 ## 4. Vérifier que tout est bon
 
-- **Local** : `pnpm run dev` → ouvrir `http://localhost:3000/auth/signup`, créer un compte, puis aller sur `/app`.
+- **Local** : `pnpm run dev` → ouvrir `http://localhost:3000`. Pour vous connecter, **créez d’abord un compte** via le lien « Créer un compte » sur la page de connexion, ou allez sur `/auth/signup`. Il n’y a pas d’utilisateur de test : le premier compte créé est le vôtre.
 - **Vercel** : après déploiement, même scénario sur l’URL de l’app (avec `BETTER_AUTH_URL` et `NEXT_PUBLIC_APP_URL` pointant vers cette URL).
 
 Pas besoin de ngrok, de tunnel ni de compte Better Auth cloud pour ça.

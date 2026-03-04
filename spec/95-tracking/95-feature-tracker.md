@@ -27,10 +27,10 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 ---
 
 ## Milestone 1 — Auth Admin
-- [ ] (TODO) /auth/login
-- [ ] (TODO) /auth/signup
-- [ ] (TODO) /auth/forgot-password
-- [ ] (TODO) Accès protégé aux routes /app
+- [x] (VALIDÉE) /auth/login
+- [x] (VALIDÉE) /auth/signup
+- [x] (VALIDÉE) /auth/forgot-password
+- [x] (VALIDÉE) Accès protégé aux routes /app
 ### Tests
 - ( ) Création de compte
 - ( ) Login OK
@@ -40,9 +40,9 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 ---
 
 ## Milestone 2 — Tournois (CRUD minimal)
-- [ ] (TODO) Liste des tournois (home admin)
-- [ ] (TODO) Création tournoi (nom, date)
-- [ ] (TODO) Accès à un tournoi
+- [x] (À TESTER) Liste des tournois (home admin)
+- [x] (À TESTER) Création tournoi (nom, date)
+- [x] (À TESTER) Accès à un tournoi
 ### Tests
 - ( ) Créer un tournoi
 - ( ) Le retrouver dans la liste

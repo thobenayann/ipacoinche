@@ -22,7 +22,7 @@ export function AppNavClient() {
       <button
         type="button"
         onClick={handleSignOut}
-        className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
+        className="flex min-h-[44px] min-w-[44px] flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
         aria-label="Déconnexion"
       >
         <LogOut className="size-5" aria-hidden />
@@ -34,7 +34,7 @@ export function AppNavClient() {
   return (
     <Link
       href="/auth/login"
-      className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
+      className="flex min-h-[44px] min-w-[44px] flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
     >
       <User className="size-5" aria-hidden />
       <span className="text-xs font-medium">Compte</span>

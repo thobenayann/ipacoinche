@@ -13,3 +13,10 @@ alwaysApply: true
 - Utiliser **Lucide React** (`lucide-react`), la librairie d’icônes utilisée nativement par ShadcnUI.
 - Importer les icônes depuis `lucide-react` (ex. `import { Home, User } from "lucide-react"`).
 - Ne pas utiliser d’emojis pour l’UI ; privilégier les composants Lucide pour cohérence et accessibilité.
+
+## TypeScript
+- **Ne jamais utiliser le type `any`** : privilégier des types précis, `unknown` avec gardes de type, ou des génériques. En cas de typage difficile, affiner le type au maximum plutôt que recourir à `any`.
+
+## Fin d'itération / avant prod
+- **Toujours terminer chaque itération de développement par une vérification des types TypeScript** : `pnpm run typecheck` (ou `pnpm exec tsc --noEmit`).
+- Corriger toute erreur de typage avant de considérer l'itération terminée, pour éviter les mauvaises surprises en production.

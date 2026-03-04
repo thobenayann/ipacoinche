@@ -17,14 +17,14 @@ export default function AppLayout({
         <div className="mx-auto flex max-w-lg items-center justify-around">
           <Link
             href="/app"
-            className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
+            className="flex min-h-[44px] min-w-[44px] flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
           >
             <Home className="size-5" aria-hidden />
             <span className="text-xs font-medium">Accueil</span>
           </Link>
           <Link
             href="/app/demo"
-            className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
+            className="flex min-h-[44px] min-w-[44px] flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
           >
             <Gamepad2 className="size-5" aria-hidden />
             <span className="text-xs font-medium">Démo</span>

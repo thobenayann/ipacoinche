@@ -2,8 +2,20 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 function LoginForm() {
   const router = useRouter();
@@ -34,69 +46,99 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen min-w-[360px] flex-col items-center justify-center px-6">
-      <h1 className="text-2xl font-semibold text-[#333333]">Connexion</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="mt-6 w-full max-w-sm space-y-4"
-      >
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-[#333333]">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="mt-1 min-h-[44px] w-full rounded-lg border border-[#333333]/20 bg-white px-3 py-2 text-[#333333] focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+    <div className="flex min-h-screen min-w-[360px] flex-col items-center justify-center gap-8 bg-[var(--background)] px-4 py-8">
+      <div className="flex flex-col items-center gap-2">
+        <Link href="/" className="cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2">
+          <Image
+            src="/logo/logo-ipanova.svg"
+            alt="IPANOVA"
+            width={120}
+            height={40}
+            className="h-10 w-auto"
+            priority
           />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-[#333333]">
-            Mot de passe
-          </label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-1 min-h-[44px] w-full rounded-lg border border-[#333333]/20 bg-white px-3 py-2 text-[#333333] focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          />
-        </div>
-        {error && (
-          <p className="text-sm text-red-600" role="alert">
-            {error}
-          </p>
-        )}
-        <button
-          type="submit"
-          disabled={loading}
-          className="min-h-[44px] w-full rounded-xl bg-[var(--accent)] font-medium text-white shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {loading ? "Connexion…" : "Se connecter"}
-        </button>
-      </form>
-      <p className="mt-4 text-center text-sm text-[#333333]/70">
-        <Link href="/auth/forgot-password" className="text-[var(--accent)] hover:underline">
-          Mot de passe oublié
         </Link>
-        {" · "}
-        <Link href="/auth/signup" className="text-[var(--accent)] hover:underline">
-          Créer un compte
-        </Link>
-      </p>
+        <p className="text-sm text-[#333333]/60">Tournoi de Coinche</p>
+      </div>
+
+      <Card className="w-full max-w-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle>Connexion</CardTitle>
+          <CardDescription>
+            Connectez-vous pour gérer vos tournois
+          </CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="vous@exemple.fr"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </div>
+            {error && (
+              <p className="text-sm text-red-600" role="alert">
+                {error}
+              </p>
+            )}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Connexion…" : "Se connecter"}
+            </Button>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-3 border-t border-[#333333]/10 pt-6">
+            <Link
+              href="/auth/forgot-password"
+              className="cursor-pointer text-sm text-[var(--accent)] hover:underline"
+            >
+              Mot de passe oublié
+            </Link>
+            <div className="w-full rounded-lg bg-[#333333]/5 p-4 text-center">
+              <p className="text-sm font-medium text-[#333333]">
+                Première visite ?
+              </p>
+              <p className="mt-1 text-sm text-[#333333]/70">
+                Créez un compte en moins d’une minute pour gérer vos tournois.
+              </p>
+              <Link href="/auth/signup" className="mt-3 block w-full cursor-pointer">
+                <Button variant="outline" className="w-full">
+                  Créer un compte
+                </Button>
+              </Link>
+            </div>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 }
 
 export default function AuthLoginPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center text-[#333333]/70">Chargement…</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center text-[#333333]/70">
+          Chargement…
+        </div>
+      }
+    >
       <LoginForm />
     </Suspense>
   );

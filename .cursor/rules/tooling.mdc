@@ -1,0 +1,15 @@
+---
+description: Gestionnaire de paquets et icônes du projet
+alwaysApply: true
+---
+
+# Outils du projet
+
+## Gestionnaire de paquets
+- **Toujours utiliser pnpm**, jamais npm ni yarn.
+- Exemples : `pnpm install`, `pnpm add <package>`, `pnpm run dev`, `pnpm run build`.
+
+## Icônes
+- Utiliser **Lucide React** (`lucide-react`), la librairie d’icônes utilisée nativement par ShadcnUI.
+- Importer les icônes depuis `lucide-react` (ex. `import { Home, User } from "lucide-react"`).
+- Ne pas utiliser d’emojis pour l’UI ; privilégier les composants Lucide pour cohérence et accessibilité.

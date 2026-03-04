@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Home, Gamepad2, User } from "lucide-react";
+import { Home, Gamepad2 } from "lucide-react";
+import { AppNavClient } from "./AppNavClient";
 
 export default function AppLayout({
   children,
@@ -28,13 +29,7 @@ export default function AppLayout({
             <Gamepad2 className="size-5" aria-hidden />
             <span className="text-xs font-medium">Démo</span>
           </Link>
-          <Link
-            href="/auth/login"
-            className="flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[#333333] transition-colors hover:bg-[var(--accent)]/10 hover:text-[var(--accent)]"
-          >
-            <User className="size-5" aria-hidden />
-            <span className="text-xs font-medium">Compte</span>
-          </Link>
+          <AppNavClient />
         </div>
       </nav>
     </div>

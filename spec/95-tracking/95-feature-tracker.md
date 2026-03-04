@@ -17,9 +17,9 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 # Milestones & Features
 
 ## Milestone 0 — Setup projet (structure)
-- [x] (À TESTER) Routes et layout de base selon `/spec/60-screens/60-sitemap-routes.md`
-- [x] (À TESTER) Shell UI mobile-first + navigation (bottom tabs)
-- [x] (À TESTER) Pages placeholder avec titres corrects
+- [x] (VALIDÉE) Routes et layout de base selon `/spec/60-screens/60-sitemap-routes.md`
+- [x] (VALIDÉE) Shell UI mobile-first + navigation (bottom tabs)
+- [x] (VALIDÉE) Pages placeholder avec titres corrects
 ### Tests
 - ( ) Navigation fonctionne sur mobile
 - ( ) Toutes les pages s’ouvrent sans erreur

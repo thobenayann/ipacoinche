@@ -133,12 +133,16 @@ Cursor ne passe pas au milestone suivant tant que l'utilisateur n'a pas validé 
 ---
 
 ## Milestone 10 — Mode démo
-- [x] (À TESTER) /app/demo (page avec bouton Lancer + Reset)
-- [x] (À TESTER) Génération tournoi fictif (12 joueurs, 4 tours, tables validées, scores aléatoires)
-- [x] (À TESTER) Reset démo (suppression de tous les tournois démo)
-- [x] (À TESTER) Bonus: lien readonly démo (ShareLink auto-généré à la création)
+- [x] (VALIDÉE) /app/demo (page avec bouton Lancer + Reset)
+- [x] (VALIDÉE) Génération tournoi fictif (12 joueurs, 4 tours, tables validées, scores aléatoires)
+- [x] (VALIDÉE) Reset démo (suppression de tous les tournois démo)
+- [x] (VALIDÉE) Bonus: lien readonly démo (ShareLink auto-généré à la création)
 ### Tests
-- ( ) Lancer la démo crée un tournoi pré-rempli
-- ( ) Le tournoi contient classement, tours, tables validées
-- ( ) Reset supprime les tournois démo
-- ( ) Le lien de partage est accessible depuis la page Partage du tournoi démo
+- (x) Lancer la démo crée un tournoi pré-rempli
+- (x) Le tournoi contient classement, tours, tables validées
+- (x) Reset supprime les tournois démo
+- (x) Le lien de partage est accessible depuis la page Partage du tournoi démo
+
+---
+
+## TOUS LES MILESTONES SONT VALIDÉS ✓

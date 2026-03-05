@@ -1,16 +1,62 @@
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { PageHeader } from "@/components/ui/page-header";
+import { ShareClient } from "./ShareClient";
+
 export default async function SharePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  const { id: tournamentId } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user?.id) notFound();
+
+  const tournament = await prisma.tournament.findFirst({
+    where: { id: tournamentId, userId: session.user.id },
+    select: { id: true, name: true, status: true },
+  });
+  if (!tournament || tournament.status !== "started") notFound();
+
+  const links = await prisma.shareLink.findMany({
+    where: { tournamentId },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      token: true,
+      active: true,
+      expiresAt: true,
+    },
+  });
+
+  const hdrs = await headers();
+  const host = hdrs.get("host") ?? "localhost:3000";
+  const proto = hdrs.get("x-forwarded-proto") ?? "http";
+  const baseUrl = `${proto}://${host}`;
+
+  const serializedLinks = links.map((l) => ({
+    ...l,
+    expiresAt: l.expiresAt.toISOString(),
+  }));
+
   return (
-    <div className="flex min-h-[60vh] min-w-[360px] flex-col items-center justify-center gap-4 px-6">
-      <h1 className="text-2xl font-semibold text-[#333333]">Partage</h1>
-      <p className="text-[#333333]/70">
-        Page placeholder — Lien lecture seule / QR — pas de logique métier
-      </p>
-      <p className="text-sm text-[#333333]/50">Tournoi ID: {id}</p>
+    <div className="min-w-[360px] px-4 py-6">
+      <div className="mx-auto max-w-lg space-y-6">
+        <PageHeader
+          title="Partage"
+          subtitle={tournament.name}
+          backHref={`/app/tournaments/${tournamentId}`}
+          backLabel="Tournoi"
+        />
+        <ShareClient
+          tournamentId={tournamentId}
+          userId={session.user.id}
+          links={serializedLinks}
+          baseUrl={baseUrl}
+        />
+      </div>
     </div>
   );
 }

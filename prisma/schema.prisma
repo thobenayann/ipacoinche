@@ -32,10 +32,23 @@ model Tournament {
   updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  players   Player[]
-  rounds    Round[]
+  players    Player[]
+  rounds     Round[]
+  shareLinks ShareLink[]
 
   @@map("tournament")
+}
+
+model ShareLink {
+  id           String     @id @default(cuid())
+  token        String     @unique @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  active       Boolean    @default(true)
+  expiresAt    DateTime
+  createdAt    DateTime   @default(now())
+
+  @@map("share_link")
 }
 
 model Player {

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { LayoutGrid, Settings, Trophy, Users, ChevronRight } from "lucide-react";
+import { LayoutGrid, Link2, Settings, Trophy, Users, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -66,6 +66,13 @@ export default async function TournamentDetailPage({
       icon: Trophy,
       label: "Classement",
       hint: "Leaderboard live",
+      show: tournament.status === "started",
+    },
+    {
+      href: `/app/tournaments/${id}/share`,
+      icon: Link2,
+      label: "Partage",
+      hint: "Lien lecture seule + QR",
       show: tournament.status === "started",
     },
     {

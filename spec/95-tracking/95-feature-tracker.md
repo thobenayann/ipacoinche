@@ -86,23 +86,23 @@ Cursor ne passe pas au milestone suivant tant que l'utilisateur n'a pas validé 
 ---
 
 ## Milestone 6 — Classement live + Détail joueur
-- [x] (À TESTER) Leaderboard (tri: wins, GA, points)
-- [x] (À TESTER) Égalité: 0.5 victoire
-- [x] (À TESTER) Détail joueur (historique par tour)
-- [x] (À TESTER) Animations sobres leaderboard
+- [x] (VALIDÉE) Leaderboard (tri: wins, GA, points)
+- [x] (VALIDÉE) Égalité: 0.5 victoire
+- [x] (VALIDÉE) Détail joueur (historique par tour)
+- [x] (VALIDÉE) Animations sobres leaderboard
 ### Tests
-- ( ) Le tri est correct
-- ( ) Les égalités comptent 0.5
-- ( ) Le détail joueur affiche partenaires/adversaires/scores
+- (x) Le tri est correct
+- (x) Les égalités comptent 0.5
+- (x) Le détail joueur affiche partenaires/adversaires/scores
 
 ---
 
 ## Milestone 7 — Partage lecture seule + QR + expiration
-- [ ] (TODO) Générer lien readonly
-- [ ] (TODO) Vues readonly (leaderboard, tours, joueurs)
-- [ ] (TODO) QR code
-- [ ] (TODO) Expiration 7 jours + écran expiré
-- [ ] (TODO) Activer/désactiver lien
+- [x] (À TESTER) Générer lien readonly
+- [x] (À TESTER) Vues readonly (leaderboard, tours, joueurs)
+- [x] (À TESTER) QR code
+- [x] (À TESTER) Expiration 7 jours + écran expiré
+- [x] (À TESTER) Activer/désactiver lien
 ### Tests
 - ( ) Le lien montre tout
 - ( ) Aucune action d'édition possible

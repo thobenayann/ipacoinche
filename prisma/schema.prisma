@@ -1,0 +1,143 @@
+// Schéma Better Auth (user, session, account, verification)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+model User {
+  id            String       @id
+  name          String
+  email         String       @unique
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  tournaments   Tournament[]
+
+  @@map("user")
+}
+
+model Tournament {
+  id                  String   @id @default(cuid())
+  name                String
+  date                DateTime?
+  status              String   @default("draft") // "draft" | "started" | "closed"
+  totalRounds         Int      @default(4)
+  shareLinkExpiryDays Int      @default(7)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  players             Player[]
+  rounds              Round[]
+  shareLinks          ShareLink[]
+
+  @@map("tournament")
+}
+
+model ShareLink {
+  id           String     @id @default(cuid())
+  token        String     @unique @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  active       Boolean    @default(true)
+  expiresAt    DateTime
+  createdAt    DateTime   @default(now())
+
+  @@map("share_link")
+}
+
+model Player {
+  id           String     @id @default(cuid())
+  name         String
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  gameTablesAsA1 GameTable[] @relation("PlayerA1")
+  gameTablesAsA2 GameTable[] @relation("PlayerA2")
+  gameTablesAsB1 GameTable[] @relation("PlayerB1")
+  gameTablesAsB2 GameTable[] @relation("PlayerB2")
+
+  @@map("player")
+}
+
+model Round {
+  id           String     @id @default(cuid())
+  tournamentId String
+  roundIndex   Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  gameTables   GameTable[]
+
+  @@unique([tournamentId, roundIndex])
+  @@map("round")
+}
+
+model GameTable {
+  id          String   @id @default(cuid())
+  roundId     String
+  round       Round    @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  playerA1Id  String?
+  playerA2Id  String?
+  playerB1Id  String?
+  playerB2Id  String?
+  playerA1    Player?  @relation("PlayerA1", fields: [playerA1Id], references: [id], onDelete: SetNull)
+  playerA2    Player?  @relation("PlayerA2", fields: [playerA2Id], references: [id], onDelete: SetNull)
+  playerB1    Player?  @relation("PlayerB1", fields: [playerB1Id], references: [id], onDelete: SetNull)
+  playerB2    Player?  @relation("PlayerB2", fields: [playerB2Id], references: [id], onDelete: SetNull)
+  scoreTeamA  Int?
+  scoreTeamB  Int?
+  status      String   @default("draft") // "draft" | "validated"
+
+  @@map("game_table")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId             String
+  userId                 String
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken            String?
+  refreshToken           String?
+  idToken                String?
+  accessTokenExpiresAt   DateTime?
+  refreshTokenExpiresAt  DateTime?
+  scope                  String?
+  password               String?
+  createdAt              DateTime
+  updatedAt              DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}

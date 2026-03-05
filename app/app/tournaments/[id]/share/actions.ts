@@ -1,13 +1,12 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { SHARE_LINK_EXPIRY_DAYS } from "@/lib/share-constants";
 import { revalidatePath } from "next/cache";
 
 async function getTournamentIfOwner(tournamentId: string, userId: string) {
   return prisma.tournament.findFirst({
     where: { id: tournamentId, userId },
-    select: { id: true },
+    select: { id: true, shareLinkExpiryDays: true },
   });
 }
 
@@ -23,7 +22,7 @@ export async function createShareLinkAction({
     if (!t) return { error: "Tournoi introuvable." };
 
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + SHARE_LINK_EXPIRY_DAYS);
+    expiresAt.setDate(expiresAt.getDate() + t.shareLinkExpiryDays);
 
     await prisma.shareLink.create({
       data: { tournamentId, expiresAt },
@@ -77,13 +76,19 @@ export async function regenerateShareLinkAction({
   try {
     const link = await prisma.shareLink.findUnique({
       where: { id: linkId },
-      include: { tournament: { select: { userId: true, id: true } } },
+      include: {
+        tournament: {
+          select: { userId: true, id: true, shareLinkExpiryDays: true },
+        },
+      },
     });
     if (!link || link.tournament.userId !== userId)
       return { error: "Lien introuvable." };
 
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + SHARE_LINK_EXPIRY_DAYS);
+    expiresAt.setDate(
+      expiresAt.getDate() + link.tournament.shareLinkExpiryDays
+    );
 
     const { randomBytes } = await import("crypto");
     const newToken = randomBytes(16).toString("hex");

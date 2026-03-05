@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Users, LayoutGrid, ChevronLeft, ChevronRight } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { DEFAULT_ROUNDS } from "@/lib/tournament-constants";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MatchCard } from "@/components/match/MatchCard";
@@ -19,18 +18,17 @@ export default async function RoundPage({
 }) {
   const { id: tournamentId, roundIndex: roundIndexStr } = await params;
   const roundIndex = parseInt(roundIndexStr, 10);
-  if (Number.isNaN(roundIndex) || roundIndex < 0 || roundIndex >= DEFAULT_ROUNDS) {
-    notFound();
-  }
+  if (Number.isNaN(roundIndex) || roundIndex < 0) notFound();
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user?.id) notFound();
 
   const tournament = await prisma.tournament.findFirst({
     where: { id: tournamentId, userId: session.user.id },
-    select: { id: true, name: true, status: true },
+    select: { id: true, name: true, status: true, totalRounds: true },
   });
   if (!tournament || tournament.status !== "started") notFound();
+  if (roundIndex >= tournament.totalRounds) notFound();
 
   const round = await prisma.round.findFirst({
     where: { tournamentId, roundIndex },
@@ -78,7 +76,7 @@ export default async function RoundPage({
       <div className="mx-auto max-w-lg space-y-6">
         <PageHeader
           title={tournament.name}
-          subtitle={`Tour ${roundIndex + 1} / ${DEFAULT_ROUNDS} · ${assignedIds.size}/${players.length} joueurs assignés`}
+          subtitle={`Tour ${roundIndex + 1} / ${tournament.totalRounds} · ${assignedIds.size}/${players.length} joueurs assignés`}
           backHref={`/app/tournaments/${tournament.id}`}
           backLabel="Retour"
         />
@@ -144,7 +142,7 @@ export default async function RoundPage({
           ) : (
             <span className="flex-1" />
           )}
-          {roundIndex < DEFAULT_ROUNDS - 1 ? (
+          {roundIndex < tournament.totalRounds - 1 ? (
             <Link
               href={`/app/tournaments/${tournament.id}/rounds/${roundIndex + 1}`}
               className="group inline-flex min-h-[40px] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-[#333333]/10 bg-white px-4 text-sm font-medium text-[#333333]/70 shadow-sm transition-all duration-200 hover:border-[var(--accent)]/30 hover:text-[var(--accent)] active:scale-[0.97]"

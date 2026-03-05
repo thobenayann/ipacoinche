@@ -4,12 +4,20 @@ import { prisma } from "@/lib/db";
  * Résout un token de partage en tournamentId.
  * Retourne null si le token n'existe pas, est inactif ou expiré.
  */
+export type ShareTokenResult = {
+  tournamentId: string;
+  tournamentName: string;
+  totalRounds: number;
+};
+
 export async function resolveShareToken(
   token: string
-): Promise<{ tournamentId: string; tournamentName: string } | null> {
+): Promise<ShareTokenResult | null> {
   const link = await prisma.shareLink.findUnique({
     where: { token },
-    include: { tournament: { select: { id: true, name: true } } },
+    include: {
+      tournament: { select: { id: true, name: true, totalRounds: true } },
+    },
   });
 
   if (!link) return null;
@@ -19,5 +27,6 @@ export async function resolveShareToken(
   return {
     tournamentId: link.tournament.id,
     tournamentName: link.tournament.name,
+    totalRounds: link.tournament.totalRounds,
   };
 }

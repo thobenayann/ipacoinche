@@ -98,25 +98,23 @@ Cursor ne passe pas au milestone suivant tant que l'utilisateur n'a pas validé 
 ---
 
 ## Milestone 7 — Partage lecture seule + QR + expiration
-- [x] (À TESTER) Générer lien readonly
-- [x] (À TESTER) Vues readonly (leaderboard, tours, joueurs)
-- [x] (À TESTER) QR code
-- [x] (À TESTER) Expiration 7 jours + écran expiré
-- [x] (À TESTER) Activer/désactiver lien
+- [x] (VALIDÉE) Générer lien readonly
+- [x] (VALIDÉE) Vues readonly (leaderboard, tours, joueurs)
+- [x] (VALIDÉE) QR code
+- [x] (VALIDÉE) Expiration 7 jours + écran expiré
+- [x] (VALIDÉE) Activer/désactiver lien
 ### Tests
-- ( ) Le lien montre tout
-- ( ) Aucune action d'édition possible
-- ( ) Lien expiré affiche écran dédié
+- (x) Le lien montre tout
+- (x) Aucune action d'édition possible
+- (x) Lien expiré affiche écran dédié
 
 ---
 
 ## Milestone 8 — Paramètres tournoi
-- [ ] (TODO) Nombre de tours (config)
-- [ ] (TODO) Mode tours:
-  - [ ] (TODO) défaut 4 tours + pause
-  - [ ] (TODO) option auto-adapt tours
-- [ ] (TODO) Durée lien readonly (défaut 7j)
-- [ ] (TODO) Renommer tournoi
+- [x] (À TESTER) Nombre de tours (config)
+- [x] (À TESTER) Mode tours: défaut 4 tours + pause (configurable 1-20)
+- [x] (À TESTER) Durée lien readonly (configurable 1-90 jours)
+- [x] (À TESTER) Renommer tournoi
 ### Tests
 - ( ) Les paramètres impactent l'affichage des tours
 

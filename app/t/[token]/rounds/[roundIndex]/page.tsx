@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { Users, LayoutGrid, ChevronLeft, ChevronRight } from "lucide-react";
 import { resolveShareToken } from "@/lib/share";
 import { prisma } from "@/lib/db";
-import { DEFAULT_ROUNDS } from "@/lib/tournament-constants";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,12 +16,11 @@ export default async function ReadonlyRoundPage({
 }) {
   const { token, roundIndex: roundIndexStr } = await params;
   const roundIndex = parseInt(roundIndexStr, 10);
-  if (Number.isNaN(roundIndex) || roundIndex < 0 || roundIndex >= DEFAULT_ROUNDS) {
-    notFound();
-  }
+  if (Number.isNaN(roundIndex) || roundIndex < 0) notFound();
 
   const share = await resolveShareToken(token);
   if (!share) notFound();
+  if (roundIndex >= share.totalRounds) notFound();
 
   const round = await prisma.round.findFirst({
     where: { tournamentId: share.tournamentId, roundIndex },
@@ -69,7 +67,7 @@ export default async function ReadonlyRoundPage({
       <div className="space-y-6">
         <PageHeader
           title={share.tournamentName}
-          subtitle={`Tour ${roundIndex + 1} / ${DEFAULT_ROUNDS} · ${assignedIds.size}/${players.length} joueurs`}
+          subtitle={`Tour ${roundIndex + 1} / ${share.totalRounds} · ${assignedIds.size}/${players.length} joueurs`}
         />
 
         {tables.length === 0 ? (
@@ -122,7 +120,7 @@ export default async function ReadonlyRoundPage({
           ) : (
             <span className="flex-1" />
           )}
-          {roundIndex < DEFAULT_ROUNDS - 1 ? (
+          {roundIndex < share.totalRounds - 1 ? (
             <Link
               href={`/t/${token}/rounds/${roundIndex + 1}`}
               className="group inline-flex min-h-[40px] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-[#333333]/10 bg-white px-4 text-sm font-medium text-[#333333]/70 shadow-sm transition-all duration-200 hover:border-[var(--accent)]/30 hover:text-[var(--accent)] active:scale-[0.97]"

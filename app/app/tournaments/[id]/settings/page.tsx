@@ -1,18 +1,47 @@
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { PageHeader } from "@/components/ui/page-header";
+import { SettingsClient } from "./SettingsClient";
+
 export default async function TournamentSettingsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  const { id: tournamentId } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user?.id) notFound();
+
+  const tournament = await prisma.tournament.findFirst({
+    where: { id: tournamentId, userId: session.user.id },
+    select: {
+      id: true,
+      name: true,
+      totalRounds: true,
+      shareLinkExpiryDays: true,
+    },
+  });
+  if (!tournament) notFound();
+
   return (
-    <div className="flex min-h-[60vh] min-w-[360px] flex-col items-center justify-center gap-4 px-6">
-      <h1 className="text-2xl font-semibold text-[#333333]">
-        Paramètres tournoi
-      </h1>
-      <p className="text-[#333333]/70">
-        Page placeholder — Paramètres — pas de logique métier
-      </p>
-      <p className="text-sm text-[#333333]/50">Tournoi ID: {id}</p>
+    <div className="min-w-[360px] px-4 py-6">
+      <div className="mx-auto max-w-lg space-y-6">
+        <PageHeader
+          title="Paramètres"
+          subtitle={tournament.name}
+          backHref={`/app/tournaments/${tournamentId}`}
+          backLabel="Tournoi"
+        />
+        <SettingsClient
+          tournamentId={tournamentId}
+          userId={session.user.id}
+          initialName={tournament.name}
+          initialTotalRounds={tournament.totalRounds}
+          initialShareLinkExpiryDays={tournament.shareLinkExpiryDays}
+        />
+      </div>
     </div>
   );
 }

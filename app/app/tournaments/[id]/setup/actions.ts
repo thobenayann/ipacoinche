@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { DEFAULT_ROUNDS, MIN_PLAYERS } from "@/lib/tournament-constants";
+import { MIN_PLAYERS } from "@/lib/tournament-constants";
 
 async function getTournamentIfOwner(
   tournamentId: string,
@@ -111,7 +111,10 @@ export async function startTournamentAction({
   tournamentId: string;
   userId: string;
 }): Promise<{ error?: string }> {
-  const tournament = await getTournamentIfOwner(tournamentId, userId);
+  const tournament = await prisma.tournament.findFirst({
+    where: { id: tournamentId, userId },
+    select: { id: true, status: true, totalRounds: true },
+  });
   if (!tournament) return { error: "Tournoi introuvable." };
   if (tournament.status !== "draft")
     return { error: "Le tournoi a déjà démarré." };
@@ -129,7 +132,7 @@ export async function startTournamentAction({
         data: { status: "started" },
       });
       await tx.round.createMany({
-        data: Array.from({ length: DEFAULT_ROUNDS }, (_, i) => ({
+        data: Array.from({ length: tournament.totalRounds }, (_, i) => ({
           tournamentId,
           roundIndex: i,
         })),

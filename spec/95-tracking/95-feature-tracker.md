@@ -10,7 +10,7 @@
   - BLOQUÉE (si info manquante)
 
 ## Règle
-Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas validé les items "À TESTER".
+Cursor ne passe pas au milestone suivant tant que l'utilisateur n'a pas validé les items "À TESTER".
 
 ---
 
@@ -21,8 +21,8 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 - [x] (VALIDÉE) Shell UI mobile-first + navigation (bottom tabs)
 - [x] (VALIDÉE) Pages placeholder avec titres corrects
 ### Tests
-- ( ) Navigation fonctionne sur mobile
-- ( ) Toutes les pages s’ouvrent sans erreur
+- (x) Navigation fonctionne sur mobile
+- (x) Toutes les pages s'ouvrent sans erreur
 
 ---
 
@@ -32,10 +32,10 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 - [x] (VALIDÉE) /auth/forgot-password
 - [x] (VALIDÉE) Accès protégé aux routes /app
 ### Tests
-- ( ) Création de compte
-- ( ) Login OK
-- ( ) Logout OK
-- ( ) Session persistante mobile OK
+- (x) Création de compte
+- (x) Login OK
+- (x) Logout OK
+- (x) Session persistante mobile OK
 
 ---
 
@@ -75,21 +75,21 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 ---
 
 ## Milestone 5 — Scores + Validation + Correction
-- [x] (À TESTER) Saisie scores (entiers >=0)
-- [x] (À TESTER) Validation table (conditions)
-- [x] (À TESTER) Table validée: état visible
-- [x] (À TESTER) Correction table (déverrouiller -> modifier -> revalider)
+- [x] (VALIDÉE) Saisie scores (entiers >=0)
+- [x] (VALIDÉE) Validation table (conditions)
+- [x] (VALIDÉE) Table validée: état visible
+- [x] (VALIDÉE) Correction table (déverrouiller -> modifier -> revalider)
 ### Tests
-- ( ) Validation impossible si incomplet
-- ( ) Correction met à jour l’affichage
+- (x) Validation impossible si incomplet
+- (x) Correction met à jour l'affichage
 
 ---
 
 ## Milestone 6 — Classement live + Détail joueur
-- [ ] (TODO) Leaderboard (tri: wins, GA, points)
-- [ ] (TODO) Égalité: 0.5 victoire
-- [ ] (TODO) Détail joueur (historique par tour)
-- [ ] (TODO) Animations sobres leaderboard
+- [x] (À TESTER) Leaderboard (tri: wins, GA, points)
+- [x] (À TESTER) Égalité: 0.5 victoire
+- [x] (À TESTER) Détail joueur (historique par tour)
+- [x] (À TESTER) Animations sobres leaderboard
 ### Tests
 - ( ) Le tri est correct
 - ( ) Les égalités comptent 0.5
@@ -105,7 +105,7 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 - [ ] (TODO) Activer/désactiver lien
 ### Tests
 - ( ) Le lien montre tout
-- ( ) Aucune action d’édition possible
+- ( ) Aucune action d'édition possible
 - ( ) Lien expiré affiche écran dédié
 
 ---
@@ -118,7 +118,7 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 - [ ] (TODO) Durée lien readonly (défaut 7j)
 - [ ] (TODO) Renommer tournoi
 ### Tests
-- ( ) Les paramètres impactent l’affichage des tours
+- ( ) Les paramètres impactent l'affichage des tours
 
 ---
 
@@ -128,7 +128,7 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 - [ ] (TODO) Export image podium
 - [ ] (TODO) Export PDF récap
 ### Tests
-- ( ) Clôture conserve l’historique
+- ( ) Clôture conserve l'historique
 - ( ) Image podium exportable
 - ( ) PDF récap exportable
 

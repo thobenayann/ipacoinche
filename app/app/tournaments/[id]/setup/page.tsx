@@ -1,18 +1,36 @@
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { SetupTournamentClient } from "./SetupTournamentClient";
+
 export default async function TournamentSetupPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
+  const { id: tournamentId } = await params;
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user?.id) notFound();
+
+  const tournament = await prisma.tournament.findFirst({
+    where: { id: tournamentId, userId: session.user.id },
+    include: {
+      players: {
+        orderBy: { createdAt: "asc" },
+        select: { id: true, name: true },
+      },
+    },
+  });
+  if (!tournament) notFound();
+
   return (
-    <div className="flex min-h-[60vh] min-w-[360px] flex-col items-center justify-center gap-4 px-6">
-      <h1 className="text-2xl font-semibold text-[#333333]">
-        Configuration tournoi (joueurs)
-      </h1>
-      <p className="text-[#333333]/70">
-        Page placeholder — Setup tournoi — pas de logique métier
-      </p>
-      <p className="text-sm text-[#333333]/50">Tournoi ID: {id}</p>
-    </div>
+    <SetupTournamentClient
+      tournamentId={tournament.id}
+      tournamentName={tournament.name}
+      players={tournament.players}
+      status={tournament.status}
+      userId={session.user.id}
+    />
   );
 }

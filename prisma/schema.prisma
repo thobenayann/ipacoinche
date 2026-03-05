@@ -27,12 +27,25 @@ model Tournament {
   id        String   @id @default(cuid())
   name      String
   date      DateTime?
+  status    String   @default("draft") // "draft" | "started"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  players   Player[]
 
   @@map("tournament")
+}
+
+model Player {
+  id           String     @id @default(cuid())
+  name         String
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@map("player")
 }
 
 model Session {

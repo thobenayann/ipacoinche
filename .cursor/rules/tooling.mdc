@@ -17,6 +17,11 @@ alwaysApply: true
 ## TypeScript
 - **Ne jamais utiliser le type `any`** : privilégier des types précis, `unknown` avec gardes de type, ou des génériques. En cas de typage difficile, affiner le type au maximum plutôt que recourir à `any`.
 
+## Qualité de code (chaque itération)
+- Produire un **code propre** : noms clairs, fonctions courtes, pas de duplication inutile.
+- Rester **type-safe** : typage explicite ou inféré correct, pas de `any`, fin d’itération avec `pnpm run typecheck`.
+- Respecter les **bonnes pratiques Next.js** : Server Components par défaut, Server Actions pour les mutations, pas de fetch côté client quand le serveur peut le faire, `headers()`/`cookies()` en async, layouts et loading/error quand pertinent.
+
 ## Fin d'itération / avant prod
 - **Toujours terminer chaque itération de développement par une vérification des types TypeScript** : `pnpm run typecheck` (ou `pnpm exec tsc --noEmit`).
 - Corriger toute erreur de typage avant de considérer l'itération terminée, pour éviter les mauvaises surprises en production.

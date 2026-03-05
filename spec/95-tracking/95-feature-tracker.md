@@ -40,22 +40,22 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 ---
 
 ## Milestone 2 — Tournois (CRUD minimal)
-- [x] (À TESTER) Liste des tournois (home admin)
-- [x] (À TESTER) Création tournoi (nom, date)
-- [x] (À TESTER) Accès à un tournoi
+- [x] (VALIDÉE) Liste des tournois (home admin)
+- [x] (VALIDÉE) Création tournoi (nom, date)
+- [x] (VALIDÉE) Accès à un tournoi
 ### Tests
-- ( ) Créer un tournoi
-- ( ) Le retrouver dans la liste
-- ( ) Ouvrir le tournoi
+- (x) Créer un tournoi
+- (x) Le retrouver dans la liste
+- (x) Ouvrir le tournoi
 
 ---
 
 ## Milestone 3 — Setup tournoi (joueurs)
-- [ ] (TODO) Ajouter joueur (rapide)
-- [ ] (TODO) Éditer joueur
-- [ ] (TODO) Supprimer joueur
-- [ ] (TODO) Validation min 4 joueurs
-- [ ] (TODO) Démarrer tournoi
+- [x] (À TESTER) Ajouter joueur (rapide)
+- [x] (À TESTER) Éditer joueur
+- [x] (À TESTER) Supprimer joueur
+- [x] (À TESTER) Validation min 4 joueurs
+- [x] (À TESTER) Démarrer tournoi
 ### Tests
 - ( ) Ajouter 12 joueurs en < 1 min
 - ( ) Démarrer uniquement si >=4

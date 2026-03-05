@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { LayoutGrid, Link2, Settings, Trophy, Users, ChevronRight } from "lucide-react";
+import { Flag, LayoutGrid, Link2, Settings, Trophy, Users, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -59,21 +59,28 @@ export default async function TournamentDetailPage({
       icon: LayoutGrid,
       label: "Tours",
       hint: "Tables par tour",
-      show: tournament.status === "started",
+      show: tournament.status === "started" || tournament.status === "closed",
     },
     {
       href: `/app/tournaments/${id}/leaderboard`,
       icon: Trophy,
       label: "Classement",
       hint: "Leaderboard live",
-      show: tournament.status === "started",
+      show: tournament.status === "started" || tournament.status === "closed",
     },
     {
       href: `/app/tournaments/${id}/share`,
       icon: Link2,
       label: "Partage",
       hint: "Lien lecture seule + QR",
-      show: tournament.status === "started",
+      show: tournament.status === "started" || tournament.status === "closed",
+    },
+    {
+      href: `/app/tournaments/${id}/close`,
+      icon: Flag,
+      label: "Clôture",
+      hint: "Résultats finaux + exports",
+      show: tournament.status === "started" || tournament.status === "closed",
     },
     {
       href: `/app/tournaments/${id}/settings`,
@@ -95,10 +102,18 @@ export default async function TournamentDetailPage({
           action={
             <Badge
               variant={
-                tournament.status === "started" ? "default" : "secondary"
+                tournament.status === "closed"
+                  ? "success"
+                  : tournament.status === "started"
+                    ? "default"
+                    : "warning"
               }
             >
-              {tournament.status === "started" ? "En cours" : "Brouillon"}
+              {tournament.status === "closed"
+                ? "Clôturé"
+                : tournament.status === "started"
+                  ? "En cours"
+                  : "Brouillon"}
             </Badge>
           }
         />

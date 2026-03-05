@@ -86,7 +86,7 @@ export default async function LeaderboardPage({
     where: { id: tournamentId, userId: session.user.id },
     select: { id: true, name: true, status: true },
   });
-  if (!tournament || tournament.status !== "started") notFound();
+  if (!tournament || (tournament.status !== "started" && tournament.status !== "closed")) notFound();
 
   const ranking = await computeRanking(tournamentId);
   const hasData = ranking.some((r) => r.played > 0);

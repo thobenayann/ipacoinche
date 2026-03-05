@@ -18,7 +18,7 @@ export default async function SharePage({
     where: { id: tournamentId, userId: session.user.id },
     select: { id: true, name: true, status: true },
   });
-  if (!tournament || tournament.status !== "started") notFound();
+  if (!tournament || (tournament.status !== "started" && tournament.status !== "closed")) notFound();
 
   const links = await prisma.shareLink.findMany({
     where: { tournamentId },

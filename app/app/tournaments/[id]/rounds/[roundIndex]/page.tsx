@@ -27,7 +27,7 @@ export default async function RoundPage({
     where: { id: tournamentId, userId: session.user.id },
     select: { id: true, name: true, status: true, totalRounds: true },
   });
-  if (!tournament || tournament.status !== "started") notFound();
+  if (!tournament || (tournament.status !== "started" && tournament.status !== "closed")) notFound();
   if (roundIndex >= tournament.totalRounds) notFound();
 
   const round = await prisma.round.findFirst({

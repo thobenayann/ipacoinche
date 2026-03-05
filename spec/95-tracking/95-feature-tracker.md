@@ -111,20 +111,20 @@ Cursor ne passe pas au milestone suivant tant que l'utilisateur n'a pas validé 
 ---
 
 ## Milestone 8 — Paramètres tournoi
-- [x] (À TESTER) Nombre de tours (config)
-- [x] (À TESTER) Mode tours: défaut 4 tours + pause (configurable 1-20)
-- [x] (À TESTER) Durée lien readonly (configurable 1-90 jours)
-- [x] (À TESTER) Renommer tournoi
+- [x] (VALIDÉE) Nombre de tours (config)
+- [x] (VALIDÉE) Mode tours: défaut 4 tours + pause (configurable 1-20)
+- [x] (VALIDÉE) Durée lien readonly (configurable 1-90 jours)
+- [x] (VALIDÉE) Renommer tournoi
 ### Tests
-- ( ) Les paramètres impactent l'affichage des tours
+- (x) Les paramètres impactent l'affichage des tours
 
 ---
 
 ## Milestone 9 — Clôture + Exports
-- [ ] (TODO) Clôture tournoi
-- [ ] (TODO) Historique consultable
-- [ ] (TODO) Export image podium
-- [ ] (TODO) Export PDF récap
+- [x] (À TESTER) Clôture tournoi (status → closed + réouverture)
+- [x] (À TESTER) Historique consultable (tours, classement, partage restent accessibles)
+- [x] (À TESTER) Export image podium (canvas → PNG téléchargeable)
+- [x] (À TESTER) Export PDF récap (impression via navigateur)
 ### Tests
 - ( ) Clôture conserve l'historique
 - ( ) Image podium exportable

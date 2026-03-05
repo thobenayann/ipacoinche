@@ -85,10 +85,18 @@ export default async function AppHomePage() {
                       </div>
                       <Badge
                         variant={
-                          t.status === "started" ? "default" : "secondary"
+                          t.status === "closed"
+                            ? "success"
+                            : t.status === "started"
+                              ? "default"
+                              : "warning"
                         }
                       >
-                        {t.status === "started" ? "En cours" : "Brouillon"}
+                        {t.status === "closed"
+                          ? "Clôturé"
+                          : t.status === "started"
+                            ? "En cours"
+                            : "Brouillon"}
                       </Badge>
                     </CardContent>
                   </Card>

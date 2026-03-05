@@ -95,9 +95,9 @@ function LoginForm() {
               />
             </div>
             {error && (
-              <p className="text-sm text-red-600" role="alert">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">
                 {error}
-              </p>
+              </div>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Connexion…" : "Se connecter"}

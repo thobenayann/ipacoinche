@@ -2,7 +2,12 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { Plus } from "lucide-react";
+import { Plus, Trophy } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default async function AppHomePage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -17,47 +22,76 @@ export default async function AppHomePage() {
   const tournaments = await prisma.tournament.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
+    include: { _count: { select: { players: true } } },
   });
 
   return (
     <div className="min-w-[360px] px-4 py-6">
-      <div className="mx-auto max-w-lg">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-[#333333]">Mes tournois</h1>
-          <Link
-            href="/app/tournaments/new"
-            className="cursor-pointer flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 text-white shadow-sm transition-all duration-200 hover:brightness-110 hover:shadow-md active:scale-[0.98]"
-            aria-label="Nouveau tournoi"
-          >
-            <Plus className="size-5" />
-            <span className="hidden sm:inline">Nouveau</span>
-          </Link>
-        </div>
+      <div className="mx-auto max-w-lg space-y-6">
+        <PageHeader
+          title="Mes tournois"
+          subtitle={
+            tournaments.length > 0
+              ? `${tournaments.length} tournoi${tournaments.length > 1 ? "s" : ""}`
+              : undefined
+          }
+          action={
+            <Link href="/app/tournaments/new">
+              <Button size="default">
+                <Plus className="size-5" aria-hidden />
+                <span className="ml-1.5 hidden sm:inline">Nouveau</span>
+              </Button>
+            </Link>
+          }
+        />
 
         {tournaments.length === 0 ? (
-          <div className="rounded-xl border border-[#333333]/10 bg-white p-8 text-center">
-            <p className="text-[#333333]/70">Aucun tournoi pour l’instant.</p>
-            <Link
-              href="/app/tournaments/new"
-              className="mt-4 inline-block cursor-pointer min-h-[44px] rounded-xl bg-[var(--accent)] px-6 py-3 font-medium text-white shadow-sm transition-all duration-200 hover:brightness-110 hover:shadow-md active:scale-[0.98]"
-            >
-              Créer un tournoi
-            </Link>
-          </div>
+          <EmptyState
+            icon={Trophy}
+            title="Aucun tournoi"
+            description="Créez votre premier tournoi de coinche pour commencer."
+            action={
+              <Link href="/app/tournaments/new">
+                <Button>Créer un tournoi</Button>
+              </Link>
+            }
+          />
         ) : (
           <ul className="space-y-3">
-            {tournaments.map((t: (typeof tournaments)[number]) => (
+            {tournaments.map((t) => (
               <li key={t.id}>
                 <Link
                   href={`/app/tournaments/${t.id}`}
-                  className="block cursor-pointer rounded-xl border border-[#333333]/10 bg-white p-4 shadow-sm transition-all duration-200 hover:border-[var(--accent)]/30 hover:shadow-md"
+                  className="block cursor-pointer transition-all duration-200 active:scale-[0.985]"
                 >
-                  <span className="font-medium text-[#333333]">{t.name}</span>
-                  {t.date && (
-                    <span className="ml-2 text-sm text-[#333333]/60">
-                      — {new Date(t.date).toLocaleDateString("fr-FR")}
-                    </span>
-                  )}
+                  <Card className="shadow-[0_2px_8px_rgba(0,0,0,0.05)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)]">
+                    <CardContent className="flex items-center gap-4 p-4">
+                      <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/10">
+                        <Trophy className="size-5 text-[var(--accent)]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium text-[#333333]">
+                          {t.name}
+                        </p>
+                        <p className="mt-0.5 text-xs text-[#333333]/60">
+                          {t._count.players} joueur
+                          {t._count.players !== 1 ? "s" : ""}
+                          {t.date &&
+                            ` · ${new Date(t.date).toLocaleDateString("fr-FR", {
+                              day: "numeric",
+                              month: "short",
+                            })}`}
+                        </p>
+                      </div>
+                      <Badge
+                        variant={
+                          t.status === "started" ? "default" : "secondary"
+                        }
+                      >
+                        {t.status === "started" ? "En cours" : "Brouillon"}
+                      </Badge>
+                    </CardContent>
+                  </Card>
                 </Link>
               </li>
             ))}

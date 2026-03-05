@@ -1,27 +1,155 @@
 ---
-description: Gestionnaire de paquets et icônes du projet
+description: Barre de qualité MAX (Next.js App Router + TS strict + perf) + UI "WOW" (Shadcn + motion + patterns) — non négociable
 alwaysApply: true
 ---
 
-# Outils du projet
+# GOLD STANDARD — Engineering + UI WOW
 
-## Gestionnaire de paquets
-- **Toujours utiliser pnpm**, jamais npm ni yarn.
-- Exemples : `pnpm install`, `pnpm add <package>`, `pnpm run dev`, `pnpm run build`.
+## 0) Règle d’or
+Tu dois livrer des écrans "production-grade" : qualité d’architecture, types stricts, performance mobile, et une UI premium.
+Si tu fais un compromis, tu dois l’écrire en commentaire `// TRADEOFF:` et proposer une amélioration.
 
-## Icônes
+---
+
+## 1) TypeScript — Zéro dette
+- Interdits : `any`, `@ts-ignore`, casts aveugles (`as X`) sans garde.
+- Tous les inputs externes doivent être validés (forms, params, searchParams).
+- Le code doit compiler sans erreur : `pnpm run typecheck` doit passer.
+- Si une règle TS bloque : refactor (pas de contournement).
+
+**Definition of Done TS**
+- 0 erreur de type
+- 0 `any`
+- 0 TODO de typage non justifié
+
+---
+
+## 2) Next.js App Router — Server-first & perf réelle
+### 2.1 Server Components par défaut
+- Pages et layouts DOIVENT être Server Components.
+- `use client` autorisé uniquement dans des composants UI isolés (forms, interactions).
+- Interdit : `use client` sur une page entière si un enfant client suffit.
+
+### 2.2 Data fetching
+- Fetch côté serveur par défaut.
+- Interdit : fetch client "par habitude" si possible serveur.
+- Les composants client reçoivent des props prêtes (pas de logique métier dedans).
+
+### 2.3 Réduction du JS envoyé
+- Interdit : importer de grosses dépendances dans le client si une alternative server existe.
+- Isoler le JS interactif au strict nécessaire :
+  - 1 page server (shell)
+  - 1 composant client (form / interaction)
+  - 0 logique métier dans le client
+
+**Definition of Done perf**
+- Pas de `use client` inutile
+- Pas de logique métier dans des composants client
+- Pas de fetch client évitable
+
+---
+
+## 3) React — pratiques “senior”
+- Pas de state pour des valeurs dérivées (calculer au rendu ou via helpers).
+- Pas de `useEffect` pour “synchroniser” de la data serveur.
+- Les handlers sont stables quand nécessaire, éviter l’instabilité inutile.
+- Composants petits, lisibles, responsabilité unique.
+- Factoriser les patterns (form wrapper, page shell, section header).
+
+---
+
+## 4) UI WOW — Playbook obligatoire (pas “banal”)
+
+### 4.1 Base Shadcn obligatoire
+Pour tous les écrans clés (auth, setup, tournoi, tables, classement) :
+- utiliser des composants ShadcnUI (Card, Button, Input, Form, Label, Tabs, Dialog/Drawer, Toast, Skeleton…)
+- Interdit : formulaires en HTML brut sans structure Shadcn.
+
+### 4.2 Pattern premium (structure visuelle)
+Chaque écran majeur DOIT respecter ce pattern :
+1) **Hero header** (titre + sous-titre utile + action contextuelle)
+2) **Surface principale** (Card/Panel avec une hiérarchie claire)
+3) **Sections** (groupées, respirantes, séparateurs subtils)
+4) **Feedback** (toast + micro-copies + states)
+
+> Si tu ne mets pas ces 4 éléments, l’écran est considéré “inachevé”.
+
+### 4.3 “Wow” = micro-interactions + profondeur + hiérarchie
+Tu dois systématiquement ajouter :
+- **states complets** : idle / hover / pressed / disabled / loading / error / success
+- **micro-interactions** :
+  - transitions courtes sur hover/press
+  - apparition douce des erreurs
+  - feedback clair lors d’une action (toast + icon)
+- **profondeur** :
+  - cards + ombres légères + bordures subtiles
+  - fonds en couches (background + surface + inner)
+
+### 4.4 Motion budget (pas de gadget, mais premium)
+- Utiliser des animations sobres (ex: Framer Motion) uniquement si cela améliore la perception.
+- Durées :
+  - micro: 120–180ms
+  - transitions: 180–260ms
+- Interdit :
+  - animations longues
+  - confettis / “fun” inutile
+  - mouvements agressifs
+- Animations attendues par défaut sur pages majeures :
+  - entrée de page (fade/slide léger)
+  - apparition des cards/sections (stagger doux)
+  - toast / validation (feedback net)
+
+### 4.5 Cohérence par domaine (règle qui t’a manqué)
+- Si tu améliores un écran d’un domaine (ex: login), tu DOIS aligner immédiatement :
+  - signup
+  - forgot-password
+  - et tout écran “frère” du domaine
+- Interdit : 1 écran premium + 1 écran brut.
+
+### 4.6 Composants “signature” (obligatoires pour l’effet wow)
+Sur les écrans majeurs, au moins 2 éléments premium parmi :
+- Card avec header + description + footer d’actions
+- Tabs ou Segmented control
+- Drawer mobile pour l’édition
+- Skeletons cohérents pendant le loading
+- Empty state illustré (via layout, icône lucide, micro-copy)
+- Inline validation élégante
+- Toast de confirmation avec icône
+
+> Si aucun composant signature n’est présent : l’écran est “banal”.
+
+---
+
+## 5) Auth UI — standard premium
+Toutes les pages auth doivent partager un même layout premium :
+- 1 card centrée
+- header (titre + sous-titre)
+- form Shadcn (labels, messages, erreurs)
+- CTA primaire + liens secondaires
+- états loading / error / success
+- animation d’entrée légère
+
+Interdit : login “joli” mais signup “raw”.
+
+---
+## 5.1) Icônes
 - Utiliser **Lucide React** (`lucide-react`), la librairie d’icônes utilisée nativement par ShadcnUI.
 - Importer les icônes depuis `lucide-react` (ex. `import { Home, User } from "lucide-react"`).
 - Ne pas utiliser d’emojis pour l’UI ; privilégier les composants Lucide pour cohérence et accessibilité.
 
-## TypeScript
-- **Ne jamais utiliser le type `any`** : privilégier des types précis, `unknown` avec gardes de type, ou des génériques. En cas de typage difficile, affiner le type au maximum plutôt que recourir à `any`.
+---
 
-## Qualité de code (chaque itération)
-- Produire un **code propre** : noms clairs, fonctions courtes, pas de duplication inutile.
-- Rester **type-safe** : typage explicite ou inféré correct, pas de `any`, fin d’itération avec `pnpm run typecheck`.
-- Respecter les **bonnes pratiques Next.js** : Server Components par défaut, Server Actions pour les mutations, pas de fetch côté client quand le serveur peut le faire, `headers()`/`cookies()` en async, layouts et loading/error quand pertinent.
+## 6) Quality Gate — obligatoire avant “done”
+À la fin de chaque milestone / itération, tu dois :
+1) Vérifier types: `pnpm run typecheck`
+2) Vérifier lint: `pnpm run lint` (si dispo)
+3) Vérifier architecture:
+   - pages/layouts server
+   - client only where needed
+4) Vérifier UI WOW:
+   - Pattern premium présent (hero + surface + sections + feedback)
+   - 2 composants signature minimum
+   - states complets (loading/error/empty)
+   - cohérence entre écrans du domaine
 
-## Fin d'itération / avant prod
-- **Toujours terminer chaque itération de développement par une vérification des types TypeScript** : `pnpm run typecheck` (ou `pnpm exec tsc --noEmit`).
-- Corriger toute erreur de typage avant de considérer l'itération terminée, pour éviter les mauvaises surprises en production.
+Si un point échoue : ce n’est pas terminé.

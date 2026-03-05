@@ -51,34 +51,34 @@ Cursor ne passe pas au milestone suivant tant que l’utilisateur n’a pas vali
 ---
 
 ## Milestone 3 — Setup tournoi (joueurs)
-- [x] (À TESTER) Ajouter joueur (rapide)
-- [x] (À TESTER) Éditer joueur
-- [x] (À TESTER) Supprimer joueur
-- [x] (À TESTER) Validation min 4 joueurs
-- [x] (À TESTER) Démarrer tournoi
+- [x] (VALIDÉE) Ajouter joueur (rapide)
+- [x] (VALIDÉE) Éditer joueur
+- [x] (VALIDÉE) Supprimer joueur
+- [x] (VALIDÉE) Validation min 4 joueurs
+- [x] (VALIDÉE) Démarrer tournoi
 ### Tests
-- ( ) Ajouter 12 joueurs en < 1 min
-- ( ) Démarrer uniquement si >=4
+- (x) Ajouter 12 joueurs en < 1 min
+- (x) Démarrer uniquement si >=4
 
 ---
 
 ## Milestone 4 — Tours + Tables (manuel + gabarit)
-- [ ] (TODO) Écran tour (tour X/total)
-- [ ] (TODO) Création table manuelle
-- [ ] (TODO) Gabarit auto: tables vides
-- [ ] (TODO) Anti-doublon joueur par tour (UI + règle)
-- [ ] (TODO) Affichage "non assignés" (pause)
+- [x] (VALIDÉE) Écran tour (tour X/total)
+- [x] (VALIDÉE) Création table manuelle
+- [x] (VALIDÉE) Gabarit auto: tables vides
+- [x] (VALIDÉE) Anti-doublon joueur par tour (UI + règle)
+- [x] (VALIDÉE) Affichage "non assignés" (pause)
 ### Tests
-- ( ) Impossible de mettre un joueur sur 2 tables du même tour
-- ( ) Les non assignés sont visibles
+- (x) Impossible de mettre un joueur sur 2 tables du même tour
+- (x) Les non assignés sont visibles
 
 ---
 
 ## Milestone 5 — Scores + Validation + Correction
-- [ ] (TODO) Saisie scores (entiers >=0)
-- [ ] (TODO) Validation table (conditions)
-- [ ] (TODO) Table validée: état visible
-- [ ] (TODO) Correction table (déverrouiller -> modifier -> revalider)
+- [x] (À TESTER) Saisie scores (entiers >=0)
+- [x] (À TESTER) Validation table (conditions)
+- [x] (À TESTER) Table validée: état visible
+- [x] (À TESTER) Correction table (déverrouiller -> modifier -> revalider)
 ### Tests
 - ( ) Validation impossible si incomplet
 - ( ) Correction met à jour l’affichage

@@ -33,6 +33,7 @@ model Tournament {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   players   Player[]
+  rounds    Round[]
 
   @@map("tournament")
 }
@@ -44,8 +45,42 @@ model Player {
   tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  gameTablesAsA1 GameTable[] @relation("PlayerA1")
+  gameTablesAsA2 GameTable[] @relation("PlayerA2")
+  gameTablesAsB1 GameTable[] @relation("PlayerB1")
+  gameTablesAsB2 GameTable[] @relation("PlayerB2")
 
   @@map("player")
+}
+
+model Round {
+  id           String     @id @default(cuid())
+  tournamentId String
+  roundIndex   Int
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  gameTables   GameTable[]
+
+  @@unique([tournamentId, roundIndex])
+  @@map("round")
+}
+
+model GameTable {
+  id          String   @id @default(cuid())
+  roundId     String
+  round       Round    @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  playerA1Id  String?
+  playerA2Id  String?
+  playerB1Id  String?
+  playerB2Id  String?
+  playerA1    Player?  @relation("PlayerA1", fields: [playerA1Id], references: [id], onDelete: SetNull)
+  playerA2    Player?  @relation("PlayerA2", fields: [playerA2Id], references: [id], onDelete: SetNull)
+  playerB1    Player?  @relation("PlayerB1", fields: [playerB1Id], references: [id], onDelete: SetNull)
+  playerB2    Player?  @relation("PlayerB2", fields: [playerB2Id], references: [id], onDelete: SetNull)
+  scoreTeamA  Int?
+  scoreTeamB  Int?
+  status      String   @default("draft") // "draft" | "validated"
+
+  @@map("game_table")
 }
 
 model Session {

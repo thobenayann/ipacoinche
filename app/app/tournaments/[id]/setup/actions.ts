@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
-import { MIN_PLAYERS } from "@/lib/tournament-constants";
+import { DEFAULT_ROUNDS, MIN_PLAYERS } from "@/lib/tournament-constants";
 
 async function getTournamentIfOwner(
   tournamentId: string,
@@ -123,14 +123,24 @@ export async function startTournamentAction({
     return { error: `Il faut au moins ${MIN_PLAYERS} joueurs pour démarrer.` };
 
   try {
-    await prisma.tournament.update({
-      where: { id: tournamentId },
-      data: { status: "started" },
+    await prisma.$transaction(async (tx) => {
+      await tx.tournament.update({
+        where: { id: tournamentId },
+        data: { status: "started" },
+      });
+      await tx.round.createMany({
+        data: Array.from({ length: DEFAULT_ROUNDS }, (_, i) => ({
+          tournamentId,
+          roundIndex: i,
+        })),
+      });
     });
     revalidatePath(`/app/tournaments/${tournamentId}`);
     revalidatePath(`/app/tournaments/${tournamentId}/setup`);
     return {};
-  } catch {
-    return { error: "Impossible de démarrer le tournoi." };
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Impossible de démarrer le tournoi.";
+    return { error: message };
   }
 }

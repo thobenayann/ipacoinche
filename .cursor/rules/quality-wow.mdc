@@ -1,0 +1,15 @@
+---
+description: Qualité et expérience premium (WOW & Quality Pass)
+alwaysApply: true
+---
+
+# Quality & WOW — Règles impératives
+
+# UI MUST follow Mobile Playbook
+- Treat the product as a MOBILE APP. Prefer native-app patterns.
+- Never use table/grid/spreadsheet layouts for tournament/match data.
+- Tournament "tables" MUST be rendered as MATCH CARDS (sports/game match card).
+- Score must be the most prominent element on match cards.
+- No generic labels like "TABLE". Use "Table X" and card suit cues (♠♥♦♣).
+- Keep UI consistent across sibling pages (auth/login, auth/signup, auth/forgot).
+- Implement empty/loading/error states using Shadcn Skeleton/Alert/Toast patterns.

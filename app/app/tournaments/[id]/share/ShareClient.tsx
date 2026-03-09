@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import {
   createShareLinkAction,
   toggleShareLinkAction,
@@ -81,11 +82,6 @@ export function ShareClient({
     return `${baseUrl}/t/${token}`;
   }
 
-  function getQrUrl(token: string) {
-    const url = encodeURIComponent(getShareUrl(token));
-    return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}`;
-  }
-
   return (
     <div className="space-y-6">
       {error && (
@@ -159,14 +155,13 @@ export function ShareClient({
               </p>
 
               {showQr === link.id && (
-                <div className="flex justify-center rounded-lg bg-white p-4">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={getQrUrl(link.token)}
-                    alt="QR Code du lien de partage"
-                    width={200}
-                    height={200}
-                    className="rounded"
+                <div className="flex justify-center rounded-xl bg-white p-5 shadow-inner">
+                  <QRCodeSVG
+                    value={getShareUrl(link.token)}
+                    size={200}
+                    level="M"
+                    fgColor="#333333"
+                    bgColor="#ffffff"
                   />
                 </div>
               )}

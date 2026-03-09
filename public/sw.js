@@ -18,14 +18,18 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
   if (event.request.method !== "GET") return;
+  if (url.protocol !== "https:" && url.protocol !== "http:") return;
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         if (
           response.status === 200 &&
-          event.request.url.match(/\.(js|css|png|jpg|svg|woff2?)$/)
+          url.pathname.match(/\.(js|css|png|jpg|svg|woff2?)$/)
         ) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {

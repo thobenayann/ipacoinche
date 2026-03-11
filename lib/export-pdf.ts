@@ -110,7 +110,7 @@ export function generateRecapPdf({
   const metaParts = [
     tournamentDate,
     `${totalPlayers} joueurs`,
-    `${totalValidatedTables} tables validees`,
+    `${totalValidatedTables} tables validées`,
   ].filter(Boolean);
   y = drawMeta(doc, metaParts.join("  -  "), pageWidth, y);
 

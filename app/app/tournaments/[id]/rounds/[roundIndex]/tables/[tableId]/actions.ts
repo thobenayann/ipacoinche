@@ -173,6 +173,42 @@ export async function validateTableAction({
   }
 }
 
+export async function deleteTableAction({
+  tableId,
+  userId,
+}: {
+  tableId: string;
+  userId: string;
+}): Promise<{ error?: string }> {
+  const meta = await getTableIfOwner(tableId, userId);
+  if (!meta) return { error: "Table introuvable." };
+
+  const tournament = await prisma.tournament.findFirst({
+    where: { id: meta.tournamentId, userId },
+    select: { status: true },
+  });
+  if (!tournament) return { error: "Tournoi introuvable." };
+  if (tournament.status !== "started" && tournament.status !== "closed") {
+    return {
+      error:
+        "La suppression n’est possible que pour un tournoi démarré ou clôturé.",
+    };
+  }
+
+  try {
+    await prisma.gameTable.delete({ where: { id: tableId } });
+    const base = `/app/tournaments/${meta.tournamentId}`;
+    revalidatePath(`${base}/rounds/${meta.roundIndex}`);
+    revalidatePath(`${base}/leaderboard`);
+    revalidatePath(`${base}/close`);
+    revalidatePath(`${base}/share`);
+    revalidatePath(`${base}`);
+    return {};
+  } catch {
+    return { error: "Impossible de supprimer la table." };
+  }
+}
+
 export async function unlockTableAction({
   tableId,
   userId,

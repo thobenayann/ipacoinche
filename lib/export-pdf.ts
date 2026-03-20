@@ -8,6 +8,7 @@ const ACCENT_LIGHT = "#e8f6f8";
 type RankingRow = {
   rank: number;
   playerName: string;
+  winAverage: string;
   wins: string;
   goalAverage: string;
   pointsScored: number;
@@ -130,10 +131,11 @@ export function generateRecapPdf({
   autoTable(doc, {
     startY: y,
     margin: { left: 20, right: 20 },
-    head: [["#", "Joueur", "Victoires", "GA", "Points"]],
+    head: [["#", "Joueur", "Moy.", "Vict.", "GA", "Pts"]],
     body: ranking.map((r) => [
       r.rank,
       r.playerName,
+      r.winAverage,
       r.wins,
       r.goalAverage,
       r.pointsScored,
@@ -154,11 +156,12 @@ export function generateRecapPdf({
       fillColor: ACCENT_LIGHT,
     },
     columnStyles: {
-      0: { halign: "center", cellWidth: 12 },
+      0: { halign: "center", cellWidth: 10 },
       1: { cellWidth: "auto" },
-      2: { halign: "center", cellWidth: 24 },
-      3: { halign: "center", cellWidth: 20 },
-      4: { halign: "center", cellWidth: 22 },
+      2: { halign: "center", cellWidth: 16 },
+      3: { halign: "center", cellWidth: 18 },
+      4: { halign: "center", cellWidth: 18 },
+      5: { halign: "center", cellWidth: 16 },
     },
     styles: {
       lineWidth: 0,

@@ -76,6 +76,7 @@ export default async function ClosePage({
             wins: r.wins,
             goalAverage: r.goalAverage,
             pointsScored: r.pointsScored,
+            played: r.played,
           }))}
           totalPlayers={totalPlayers}
           totalValidatedTables={totalValidatedTables}

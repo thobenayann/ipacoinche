@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { closeTournamentAction, reopenTournamentAction } from "./actions";
 import { generateRecapPdf } from "@/lib/export-pdf";
+import { winAverage } from "@/lib/ranking";
 import { podiumDisplayIndices } from "@/lib/podium-display";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +22,7 @@ type PlayerRanking = {
   wins: number;
   goalAverage: number;
   pointsScored: number;
+  played: number;
 };
 
 export function CloseClient({
@@ -250,9 +252,13 @@ export function CloseClient({
       totalPlayers,
       totalValidatedTables,
       ranking: ranking.map((r) => ({
-        ...r,
+        rank: r.rank,
+        playerName: r.playerName,
+        winAverage:
+          winAverage(r) < 0 ? "—" : winAverage(r).toFixed(2),
         wins: formatWins(r.wins),
         goalAverage: `${r.goalAverage >= 0 ? "+" : ""}${r.goalAverage}`,
+        pointsScored: r.pointsScored,
       })),
       logoDataUrl,
       podiumImageDataUrl,
@@ -377,6 +383,12 @@ export function CloseClient({
                 </span>
                 <span className="text-xs tabular-nums text-[#333333]/60">
                   {formatWins(r.wins)} V
+                </span>
+                <span
+                  className="w-10 text-right text-xs tabular-nums text-[#333333]/50"
+                  title="Moyenne"
+                >
+                  {winAverage(r) < 0 ? "—" : winAverage(r).toFixed(2)}
                 </span>
                 <span className="w-12 text-right text-xs tabular-nums text-[#333333]/60">
                   GA {r.goalAverage >= 0 ? "+" : ""}

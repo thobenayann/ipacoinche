@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Trophy, Medal, User } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { computeRanking } from "@/lib/ranking";
+import { computeRanking, winAverage } from "@/lib/ranking";
 import { podiumDisplayIndices } from "@/lib/podium-display";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -157,12 +157,20 @@ export default async function LeaderboardPage({
                           {r.playerName}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-[#333333]/60">
+                      <div className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs text-[#333333]/60 sm:gap-3">
                         <Badge
                           variant={r.played > 0 ? "default" : "secondary"}
                         >
                           {formatWins(r.wins)} V
                         </Badge>
+                        <span
+                          className="w-11 text-right tabular-nums"
+                          title="Moyenne victoires / matchs joués"
+                        >
+                          {winAverage(r) < 0
+                            ? "—"
+                            : winAverage(r).toFixed(2)}
+                        </span>
                         <span className="w-12 text-right tabular-nums">
                           GA {r.goalAverage >= 0 ? "+" : ""}
                           {r.goalAverage}

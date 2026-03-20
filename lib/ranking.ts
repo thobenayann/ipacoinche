@@ -21,9 +21,25 @@ export type PlayerRoundEntry = {
   result: "W" | "L" | "D";
 };
 
+/** Moyenne de points de victoire (prorata matchs joués). */
+export function winAverage(stats: Pick<PlayerStats, "wins" | "played">): number {
+  if (stats.played <= 0) return -1;
+  return stats.wins / stats.played;
+}
+
+function sameRankingRow(a: PlayerStats, b: PlayerStats): boolean {
+  return (
+    Math.abs(winAverage(a) - winAverage(b)) < 1e-9 &&
+    a.wins === b.wins &&
+    a.goalAverage === b.goalAverage &&
+    a.pointsScored === b.pointsScored
+  );
+}
+
 /**
  * Calcule le classement complet d'un tournoi à partir des tables validées.
- * Tri: 1) wins desc  2) goalAverage desc  3) pointsScored desc
+ * Tri: 1) moyenne de victoires (wins/played) 2) victoires totales 3) GA 4) points marqués.
+ * La moyenne permet de comparer équitablement si tout le monde n'a pas joué le même nombre de matchs.
  */
 export async function computeRanking(
   tournamentId: string
@@ -112,18 +128,16 @@ export async function computeRanking(
   }
 
   result.sort((a, b) => {
+    const avgA = winAverage(a);
+    const avgB = winAverage(b);
+    if (avgB !== avgA) return avgB - avgA;
     if (b.wins !== a.wins) return b.wins - a.wins;
     if (b.goalAverage !== a.goalAverage) return b.goalAverage - a.goalAverage;
     return b.pointsScored - a.pointsScored;
   });
 
   for (let i = 0; i < result.length; i++) {
-    if (
-      i > 0 &&
-      result[i].wins === result[i - 1].wins &&
-      result[i].goalAverage === result[i - 1].goalAverage &&
-      result[i].pointsScored === result[i - 1].pointsScored
-    ) {
+    if (i > 0 && sameRankingRow(result[i], result[i - 1])) {
       result[i].rank = result[i - 1].rank;
     } else {
       result[i].rank = i + 1;

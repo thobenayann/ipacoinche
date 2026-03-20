@@ -91,7 +91,7 @@ export default async function RoundPage({
           <EmptyState
             icon={LayoutGrid}
             title="Aucune table"
-            description="Ajoutez une table manuellement ou utilisez le gabarit automatique."
+            description="Ajoutez une table, le gabarit automatique, ou la suggestion d'équipes (tables créées automatiquement si besoin)."
           />
         ) : (
           <ul className="space-y-4">

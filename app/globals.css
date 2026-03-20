@@ -101,15 +101,13 @@ body {
   animation: pulse-slow 3s ease-in-out infinite;
 }
 
-/* Page transition — applied via template.tsx (re-mounts on every navigation) */
+/* Page transition — opacity only (no transform: transform on an ancestor breaks position:fixed/sticky) */
 @keyframes page-enter {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(16px);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Trophy, Medal, User } from "lucide-react";
 import { resolveShareToken } from "@/lib/share";
-import { computeRanking } from "@/lib/ranking";
+import { computeRanking, winAverage } from "@/lib/ranking";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,12 +60,20 @@ export default async function ReadonlyLeaderboardPage({
                         {r.playerName}
                       </p>
                     </div>
-                    <div className="flex items-center gap-3 text-xs text-[#333333]/60">
+                    <div className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs text-[#333333]/60 sm:gap-3">
                       <Badge
                         variant={r.played > 0 ? "default" : "secondary"}
                       >
                         {formatWins(r.wins)} V
                       </Badge>
+                      <span
+                        className="w-11 text-right tabular-nums"
+                        title="Moyenne victoires / matchs joués"
+                      >
+                        {winAverage(r) < 0
+                          ? "—"
+                          : winAverage(r).toFixed(2)}
+                      </span>
                       <span className="w-12 text-right tabular-nums">
                         GA {r.goalAverage >= 0 ? "+" : ""}
                         {r.goalAverage}

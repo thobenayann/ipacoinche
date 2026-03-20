@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Trophy, Medal, User } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { computeRanking } from "@/lib/ranking";
+import { computeRanking, winAverage } from "@/lib/ranking";
+import { podiumDisplayIndices } from "@/lib/podium-display";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
@@ -47,7 +48,8 @@ function PodiumCard({
     },
   };
   const c = colors[rank] ?? colors[3];
-  const size = rank === 1 ? "h-24" : "h-20";
+  const size =
+    rank === 1 ? "h-24" : rank === 2 ? "h-[5.25rem]" : "h-20";
 
   return (
     <Link
@@ -92,6 +94,7 @@ export default async function LeaderboardPage({
   const hasData = ranking.some((r) => r.played > 0);
 
   const podium = ranking.slice(0, 3);
+  const podiumOrder = podiumDisplayIndices(podium);
 
   return (
     <div className="min-w-[360px] px-4 py-6">
@@ -113,30 +116,20 @@ export default async function LeaderboardPage({
           <>
             {podium.length >= 3 && (
               <div className="flex items-end gap-2">
-                <PodiumCard
-                  rank={2}
-                  name={podium[1].playerName}
-                  wins={podium[1].wins}
-                  goalAverage={podium[1].goalAverage}
-                  playerId={podium[1].playerId}
-                  tournamentId={tournamentId}
-                />
-                <PodiumCard
-                  rank={1}
-                  name={podium[0].playerName}
-                  wins={podium[0].wins}
-                  goalAverage={podium[0].goalAverage}
-                  playerId={podium[0].playerId}
-                  tournamentId={tournamentId}
-                />
-                <PodiumCard
-                  rank={3}
-                  name={podium[2].playerName}
-                  wins={podium[2].wins}
-                  goalAverage={podium[2].goalAverage}
-                  playerId={podium[2].playerId}
-                  tournamentId={tournamentId}
-                />
+                {podiumOrder.map((idx) => {
+                  const row = podium[idx];
+                  return (
+                    <PodiumCard
+                      key={row.playerId}
+                      rank={row.rank}
+                      name={row.playerName}
+                      wins={row.wins}
+                      goalAverage={row.goalAverage}
+                      playerId={row.playerId}
+                      tournamentId={tournamentId}
+                    />
+                  );
+                })}
               </div>
             )}
 
@@ -164,12 +157,20 @@ export default async function LeaderboardPage({
                           {r.playerName}
                         </p>
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-[#333333]/60">
+                      <div className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs text-[#333333]/60 sm:gap-3">
                         <Badge
                           variant={r.played > 0 ? "default" : "secondary"}
                         >
                           {formatWins(r.wins)} V
                         </Badge>
+                        <span
+                          className="w-11 text-right tabular-nums"
+                          title="Moyenne victoires / matchs joués"
+                        >
+                          {winAverage(r) < 0
+                            ? "—"
+                            : winAverage(r).toFixed(2)}
+                        </span>
                         <span className="w-12 text-right tabular-nums">
                           GA {r.goalAverage >= 0 ? "+" : ""}
                           {r.goalAverage}

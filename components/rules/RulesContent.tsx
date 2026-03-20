@@ -8,6 +8,8 @@ import {
   ArrowDownUp,
   Equal,
   Medal,
+  Coffee,
+  Sparkles,
 } from "lucide-react";
 
 function RuleSection({
@@ -72,6 +74,34 @@ export function RulesContent() {
         </p>
       </RuleSection>
 
+      <RuleSection icon={Coffee} title="Pause (exempts)">
+        <p>
+          Les joueurs qui ne sont sur <strong>aucune table</strong> ce tour-là
+          sont « en pause ». Au tour suivant, ils ont en principe la priorité
+          pour rejouer (même idée que dans une salle : on compense les absences
+          au tour précédent).
+        </p>
+        <p>
+          Quand tout le monde n&apos;a pas joué le même nombre de matchs, le
+          classement utilise une <strong>moyenne</strong> (voir ci-dessous) :
+          mieux vaut comparer des performances au prorata des parties jouées.
+        </p>
+      </RuleSection>
+
+      <RuleSection icon={Sparkles} title="Suggestion d&apos;équipes (optionnel)">
+        <p>
+          Remplir les tables reste possible <strong>à la main</strong> (défaut).
+          L&apos;application peut proposer une <strong>suggestion</strong> : elle
+          remplit les tables vides du tour concerné, en donnant la priorité aux
+          joueurs en pause au <strong>tour précédent</strong>, et en évitant de
+          remettre deux joueurs déjà partenaires sur une même équipe dans le
+          passé.
+        </p>
+        <p className="text-xs text-[#333333]/50">
+          Si aucune combinaison n&apos;est possible, il faut ajuster manuellement.
+        </p>
+      </RuleSection>
+
       <RuleSection icon={Target} title="Scores">
         <p>
           Chaque table produit un score par équipe :{" "}
@@ -125,16 +155,26 @@ export function RulesContent() {
       <RuleSection icon={Medal} title="Classement" accent>
         <p>
           Les joueurs sont classés selon{" "}
-          <strong>3 critères successifs</strong> :
+          <strong>4 critères successifs</strong> :
         </p>
         <div className="mt-2 space-y-2">
-          <OrderBadge n={1} label="Nombre de victoires (décroissant)" />
-          <OrderBadge n={2} label="Goal Average (décroissant)" />
-          <OrderBadge n={3} label="Points marqués (décroissant)" />
+          <OrderBadge
+            n={1}
+            label="Moyenne de victoires (victoires ÷ matchs joués, décroissant)"
+          />
+          <OrderBadge n={2} label="Victoires totales (décroissant)" />
+          <OrderBadge n={3} label="Goal Average (décroissant)" />
+          <OrderBadge n={4} label="Points marqués (décroissant)" />
         </div>
+        <p className="mt-2 rounded-lg bg-[var(--accent)]/8 px-3 py-2 text-xs text-[#333333]/80">
+          <strong>Exemple :</strong> 4 victoires en 5 matchs (moyenne 0,80) passe
+          devant 3 victoires en 4 matchs (0,75), car le nombre total de
+          victoires seul ne suffit pas si tout le monde n&apos;a pas joué autant
+          de fois.
+        </p>
         <p className="mt-2 text-xs text-[#333333]/50">
-          En cas d&apos;égalité parfaite sur les 3 critères, les joueurs
-          partagent le même rang.
+          En cas d&apos;égalité sur tous les critères, les joueurs partagent le
+          même rang.
         </p>
       </RuleSection>
 

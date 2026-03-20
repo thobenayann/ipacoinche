@@ -4,14 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  deleteTableAction,
   unlockTableAction,
   updateTableAction,
   validateTableAction,
 } from "./actions";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, LockOpen } from "lucide-react";
+import { ChevronLeft, LockOpen, Trash2 } from "lucide-react";
 
 type PlayerOption = { id: string; name: string };
 
@@ -56,6 +58,8 @@ export function TableEditorClient({
   const [saving, setSaving] = useState(false);
   const [validating, setValidating] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const empty = "";
@@ -114,6 +118,21 @@ export function TableEditorClient({
     setUnlocking(false);
     if (result.error) setError(result.error);
     else router.refresh();
+  }
+
+  async function handleConfirmDelete() {
+    setError(null);
+    setDeleting(true);
+    const result = await deleteTableAction({ tableId, userId });
+    setDeleting(false);
+    if (result.error) {
+      setError(result.error);
+      setDeleteOpen(false);
+      return;
+    }
+    setDeleteOpen(false);
+    router.push(`/app/tournaments/${tournamentId}/rounds/${roundIndex}`);
+    router.refresh();
   }
 
   const isDraft = status === "draft";
@@ -290,6 +309,51 @@ export function TableEditorClient({
             revalider.
           </p>
         )}
+
+        <div className="mt-10 rounded-xl border border-red-200/80 bg-red-50/50 p-4">
+          <h2 className="text-sm font-semibold text-red-900">Zone sensible</h2>
+          <p className="mt-1 text-xs leading-relaxed text-red-900/80">
+            Supprime définitivement cette table du tour (affectations, scores et
+            validation). Utile si la table a été ajoutée par erreur.
+          </p>
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            className="mt-3"
+            onClick={() => {
+              setError(null);
+              setDeleteOpen(true);
+            }}
+          >
+            <Trash2 className="size-4" aria-hidden />
+            <span className="ml-1.5">Supprimer la table</span>
+          </Button>
+        </div>
+
+        <ConfirmDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          title="Supprimer cette table ?"
+          description={
+            <>
+              <p>
+                Cette action est <strong>irréversible</strong>. Seront
+                définitivement perdus&nbsp;: les joueurs assignés, les scores,
+                et le statut de validation de cette table.
+              </p>
+              {status === "validated" && (
+                <p className="mt-2">
+                  Comme la table est validée, le <strong>classement</strong> du
+                  tournoi sera recalculé sans ces résultats.
+                </p>
+              )}
+            </>
+          }
+          confirmLabel="Supprimer définitivement"
+          onConfirm={handleConfirmDelete}
+          loading={deleting}
+        />
       </div>
     </div>
   );

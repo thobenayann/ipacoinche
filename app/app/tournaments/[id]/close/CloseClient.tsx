@@ -4,6 +4,8 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { closeTournamentAction, reopenTournamentAction } from "./actions";
 import { generateRecapPdf } from "@/lib/export-pdf";
+import { winAverage } from "@/lib/ranking";
+import { podiumDisplayIndices } from "@/lib/podium-display";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -20,6 +22,7 @@ type PlayerRanking = {
   wins: number;
   goalAverage: number;
   pointsScored: number;
+  played: number;
 };
 
 export function CloseClient({
@@ -88,30 +91,55 @@ export function CloseClient({
     return Number.isInteger(wins) ? String(wins) : wins.toFixed(1);
   }
 
+  /** Médaille selon le rang réel (ex æquo = même médaille : plusieurs or si plusieurs rangs 1). */
+  function medalForRank(rank: number): string {
+    if (rank === 1) return "\u{1F947}";
+    if (rank === 2) return "\u{1F948}";
+    return "\u{1F949}";
+  }
+
+  /** Hauteur du plateau : le rang 1 est toujours le plus haut ; ex æquo = même hauteur. */
+  function barHeightForRank(rank: number): number {
+    if (rank === 1) return 260;
+    if (rank === 2) return 200;
+    return 160;
+  }
+
+  function barColorForRank(rank: number): string {
+    if (rank === 1) return "#51bdcb";
+    if (rank === 2) return "#a0d8df";
+    return "#c8e8ec";
+  }
+
   function drawPodiumBars(
     ctx: CanvasRenderingContext2D,
     W: number,
     startY: number,
     bottomY: number
   ) {
-    const medals = ["\u{1F947}", "\u{1F948}", "\u{1F949}"];
     const podium = ranking.slice(0, 3);
-    const podiumOrder = podium.length >= 3 ? [1, 0, 2] : [0, 1, 2];
-    const barHeights = [200, 260, 160];
-    const barWidth = 180;
-    const startX = (W - barWidth * 3 - 40) / 2;
-    const maxBarH = Math.max(...barHeights);
+    if (podium.length === 0) return;
+
+    const displayIndices = podiumDisplayIndices(podium);
+    const numCols = displayIndices.length;
+    const gap = 20;
+    const barWidth = numCols === 2 ? 220 : 180;
+    const totalBarsWidth = barWidth * numCols + gap * (numCols - 1);
+    const startX = (W - totalBarsWidth) / 2;
+
+    const heights = displayIndices.map((pi) => barHeightForRank(podium[pi].rank));
+    const maxBarH = Math.max(...heights);
     const availableH = bottomY - startY;
     const scale = availableH < maxBarH + 20 ? (availableH - 20) / maxBarH : 1;
 
-    podiumOrder.forEach((pi, col) => {
+    displayIndices.forEach((pi, col) => {
       const p = podium[pi];
       if (!p) return;
-      const x = startX + col * (barWidth + 20);
-      const barH = barHeights[pi] * scale;
+      const x = startX + col * (barWidth + gap);
+      const barH = barHeightForRank(p.rank) * scale;
       const barY = bottomY - barH;
 
-      ctx.fillStyle = pi === 0 ? "#51bdcb" : pi === 1 ? "#a0d8df" : "#c8e8ec";
+      ctx.fillStyle = barColorForRank(p.rank);
       ctx.beginPath();
       ctx.roundRect(x, barY, barWidth, barH, [12, 12, 0, 0]);
       ctx.fill();
@@ -119,7 +147,7 @@ export function CloseClient({
       ctx.fillStyle = "#333333";
       ctx.font = "36px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(medals[pi], x + barWidth / 2, barY + 50);
+      ctx.fillText(medalForRank(p.rank), x + barWidth / 2, barY + 50);
 
       ctx.font = "bold 20px sans-serif";
       ctx.fillText(p.playerName, x + barWidth / 2, barY + 85);
@@ -224,9 +252,13 @@ export function CloseClient({
       totalPlayers,
       totalValidatedTables,
       ranking: ranking.map((r) => ({
-        ...r,
+        rank: r.rank,
+        playerName: r.playerName,
+        winAverage:
+          winAverage(r) < 0 ? "—" : winAverage(r).toFixed(2),
         wins: formatWins(r.wins),
         goalAverage: `${r.goalAverage >= 0 ? "+" : ""}${r.goalAverage}`,
+        pointsScored: r.pointsScored,
       })),
       logoDataUrl,
       podiumImageDataUrl,
@@ -351,6 +383,12 @@ export function CloseClient({
                 </span>
                 <span className="text-xs tabular-nums text-[#333333]/60">
                   {formatWins(r.wins)} V
+                </span>
+                <span
+                  className="w-10 text-right text-xs tabular-nums text-[#333333]/50"
+                  title="Moyenne"
+                >
+                  {winAverage(r) < 0 ? "—" : winAverage(r).toFixed(2)}
                 </span>
                 <span className="w-12 text-right text-xs tabular-nums text-[#333333]/60">
                   GA {r.goalAverage >= 0 ? "+" : ""}

@@ -1,79 +1,14 @@
 import { headers } from "next/headers";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Trophy, Medal, User } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { computeRanking, winAverage } from "@/lib/ranking";
+import { computeRanking } from "@/lib/ranking";
 import { podiumDisplayIndices } from "@/lib/podium-display";
+import { PodiumCard } from "@/components/leaderboard/PodiumCard";
+import { LeaderboardRow } from "@/components/leaderboard/LeaderboardRow";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-
-function formatWins(wins: number): string {
-  return Number.isInteger(wins) ? String(wins) : wins.toFixed(1);
-}
-
-function PodiumCard({
-  rank,
-  name,
-  wins,
-  goalAverage,
-  playerId,
-  tournamentId,
-}: {
-  rank: number;
-  name: string;
-  wins: number;
-  goalAverage: number;
-  playerId: string;
-  tournamentId: string;
-}) {
-  const colors: Record<number, { bg: string; ring: string; text: string }> = {
-    1: {
-      bg: "bg-amber-50",
-      ring: "ring-amber-400",
-      text: "text-amber-600",
-    },
-    2: {
-      bg: "bg-slate-50",
-      ring: "ring-slate-300",
-      text: "text-slate-500",
-    },
-    3: {
-      bg: "bg-orange-50",
-      ring: "ring-orange-300",
-      text: "text-orange-500",
-    },
-  };
-  const c = colors[rank] ?? colors[3];
-  const size =
-    rank === 1 ? "h-24" : rank === 2 ? "h-[5.25rem]" : "h-20";
-
-  return (
-    <Link
-      href={`/app/tournaments/${tournamentId}/players/${playerId}`}
-      className="block flex-1 cursor-pointer transition-all duration-200 active:scale-[0.97]"
-    >
-      <Card
-        className={`${c.bg} ring-2 ${c.ring} overflow-hidden shadow-sm transition-shadow duration-200 hover:shadow-md`}
-      >
-        <CardContent className={`flex ${size} flex-col items-center justify-center gap-1 p-3`}>
-          <span className={`text-2xl font-bold ${c.text}`}>
-            {rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉"}
-          </span>
-          <p className="max-w-full truncate text-sm font-semibold text-[#333333]">
-            {name}
-          </p>
-          <p className="text-xs text-[#333333]/60">
-            {formatWins(wins)} V · GA {goalAverage >= 0 ? "+" : ""}{goalAverage}
-          </p>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-}
 
 export default async function LeaderboardPage({
   params,
@@ -121,12 +56,11 @@ export default async function LeaderboardPage({
                   return (
                     <PodiumCard
                       key={row.playerId}
+                      href={`/app/tournaments/${tournamentId}/players/${row.playerId}`}
                       rank={row.rank}
                       name={row.playerName}
                       wins={row.wins}
                       goalAverage={row.goalAverage}
-                      playerId={row.playerId}
-                      tournamentId={tournamentId}
                     />
                   );
                 })}
@@ -135,53 +69,12 @@ export default async function LeaderboardPage({
 
             <div className="space-y-2">
               {ranking.map((r) => (
-                <Link
+                <LeaderboardRow
                   key={r.playerId}
-                  href={`/app/tournaments/${tournamentId}/players/${r.playerId}`}
-                  className="block cursor-pointer transition-all duration-200 active:scale-[0.985]"
-                >
-                  <Card className="shadow-[0_1px_4px_rgba(0,0,0,0.04)] transition-shadow duration-200 hover:shadow-[0_3px_12px_rgba(0,0,0,0.08)]">
-                    <CardContent className="flex min-h-[52px] items-center gap-3 p-3 pl-4">
-                      <span className="w-7 flex-shrink-0 text-center text-sm font-bold text-[#333333]/40">
-                        {r.rank}
-                      </span>
-                      <div className="flex size-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/10">
-                        {r.rank <= 3 ? (
-                          <Medal className="size-4 text-[var(--accent)]" />
-                        ) : (
-                          <User className="size-4 text-[var(--accent)]" />
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium text-[#333333]">
-                          {r.playerName}
-                        </p>
-                      </div>
-                      <div className="flex flex-shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs text-[#333333]/60 sm:gap-3">
-                        <Badge
-                          variant={r.played > 0 ? "default" : "secondary"}
-                        >
-                          {formatWins(r.wins)} V
-                        </Badge>
-                        <span
-                          className="w-11 text-right tabular-nums"
-                          title="Moyenne victoires / matchs joués"
-                        >
-                          {winAverage(r) < 0
-                            ? "—"
-                            : winAverage(r).toFixed(2)}
-                        </span>
-                        <span className="w-12 text-right tabular-nums">
-                          GA {r.goalAverage >= 0 ? "+" : ""}
-                          {r.goalAverage}
-                        </span>
-                        <span className="w-10 text-right tabular-nums">
-                          {r.pointsScored} pts
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                  stats={r}
+                  playerHref={`/app/tournaments/${tournamentId}/players/${r.playerId}`}
+                  historyFetchUrl={`/api/tournaments/${tournamentId}/players/${r.playerId}/history`}
+                />
               ))}
             </div>
           </>

@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 export type ShareTokenResult = {
   tournamentId: string;
   tournamentName: string;
+  tournamentStatus: string;
   totalRounds: number;
 };
 
@@ -16,7 +17,9 @@ export async function resolveShareToken(
   const link = await prisma.shareLink.findUnique({
     where: { token },
     include: {
-      tournament: { select: { id: true, name: true, totalRounds: true } },
+      tournament: {
+        select: { id: true, name: true, totalRounds: true, status: true },
+      },
     },
   });
 
@@ -27,6 +30,7 @@ export async function resolveShareToken(
   return {
     tournamentId: link.tournament.id,
     tournamentName: link.tournament.name,
+    tournamentStatus: link.tournament.status,
     totalRounds: link.tournament.totalRounds,
   };
 }

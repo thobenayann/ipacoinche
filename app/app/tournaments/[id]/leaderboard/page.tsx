@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { computeRanking, winAverage } from "@/lib/ranking";
 import { podiumDisplayIndices } from "@/lib/podium-display";
+import { PodiumCard } from "@/components/leaderboard/PodiumCard";
 import { PageHeader } from "@/components/ui/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,66 +14,6 @@ import { Badge } from "@/components/ui/badge";
 
 function formatWins(wins: number): string {
   return Number.isInteger(wins) ? String(wins) : wins.toFixed(1);
-}
-
-function PodiumCard({
-  rank,
-  name,
-  wins,
-  goalAverage,
-  playerId,
-  tournamentId,
-}: {
-  rank: number;
-  name: string;
-  wins: number;
-  goalAverage: number;
-  playerId: string;
-  tournamentId: string;
-}) {
-  const colors: Record<number, { bg: string; ring: string; text: string }> = {
-    1: {
-      bg: "bg-amber-50",
-      ring: "ring-amber-400",
-      text: "text-amber-600",
-    },
-    2: {
-      bg: "bg-slate-50",
-      ring: "ring-slate-300",
-      text: "text-slate-500",
-    },
-    3: {
-      bg: "bg-orange-50",
-      ring: "ring-orange-300",
-      text: "text-orange-500",
-    },
-  };
-  const c = colors[rank] ?? colors[3];
-  const size =
-    rank === 1 ? "h-24" : rank === 2 ? "h-[5.25rem]" : "h-20";
-
-  return (
-    <Link
-      href={`/app/tournaments/${tournamentId}/players/${playerId}`}
-      className="block flex-1 cursor-pointer transition-all duration-200 active:scale-[0.97]"
-    >
-      <Card
-        className={`${c.bg} ring-2 ${c.ring} overflow-hidden shadow-sm transition-shadow duration-200 hover:shadow-md`}
-      >
-        <CardContent className={`flex ${size} flex-col items-center justify-center gap-1 p-3`}>
-          <span className={`text-2xl font-bold ${c.text}`}>
-            {rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉"}
-          </span>
-          <p className="max-w-full truncate text-sm font-semibold text-[#333333]">
-            {name}
-          </p>
-          <p className="text-xs text-[#333333]/60">
-            {formatWins(wins)} V · GA {goalAverage >= 0 ? "+" : ""}{goalAverage}
-          </p>
-        </CardContent>
-      </Card>
-    </Link>
-  );
 }
 
 export default async function LeaderboardPage({
@@ -121,12 +62,11 @@ export default async function LeaderboardPage({
                   return (
                     <PodiumCard
                       key={row.playerId}
+                      href={`/app/tournaments/${tournamentId}/players/${row.playerId}`}
                       rank={row.rank}
                       name={row.playerName}
                       wins={row.wins}
                       goalAverage={row.goalAverage}
-                      playerId={row.playerId}
-                      tournamentId={tournamentId}
                     />
                   );
                 })}
